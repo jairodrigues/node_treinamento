@@ -1,23 +1,26 @@
+var ProdutosDAO = require('../infra/ProdutosDAO')
 module.exports = function(app) {
 
     var listaProdutos = function(req, res, next) {
         var connection = app.infra.connectionFactory();
-        var produtosDAO = new app.infra.ProdutosDAO(connection);
+        var produtosDAO = new ProdutosDAO(connection);
 
-        produtosDAO.lista(function(erros, results) {
-            if(erros){
-                return next(erros)
-            }
-            res.format({
-                html: function() {
-                    res.render('produtos/lista', {lista:results});
-                },
-                json: function() {
-                    res.json(results);
-                }
-            });
-        });
+        // produtosDAO.lista(function(erros, results) {
+        //     if(erros){
+        //         return next(erros)
+        //     }
+        //     res.format({
+        //         html: function() {
+        //             res.render('produtos/lista', {lista:results});
+        //         },
+        //         json: function() {
+        //             res.json(results);
+        //         }
+        //     });
+        // });
 
+        const resultado = produtosDAO.lista();
+        console.log(resultado)
         connection.end();
     }
 

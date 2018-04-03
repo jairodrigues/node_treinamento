@@ -14,12 +14,10 @@ module.exports = function () {
   app.use(bodyParser.json());
   app.use(expressValidator());
 
-  load('routes', {cwd: 'app'})
-    .then('infra')
+  load('infra', {cwd: 'app'})
     .then('controllers')
-    .into(app, function (done) {
-      console.log(done)
-    });
+    .then('routes')
+    .into(app);
 
   app.use(function (req, res, next) {
     res

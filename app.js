@@ -4,6 +4,6 @@ var io = require('socket.io')(http);
 
 app.set('io',io);
 
-http.listen(3001,function(){
-    console.log("servirdor rodando");
-});
+const PORTA = 3030
+
+http.listen(PORTA,() => {console.log(`servirdor rodando porta ${PORTA}`)})

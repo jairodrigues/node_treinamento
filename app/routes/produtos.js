@@ -1,26 +1,24 @@
-var ProdutosDAO = require('../infra/ProdutosDAO')
-module.exports = function(app) {
 
+module.exports = function(app) {
     var listaProdutos = function(req, res, next) {
         var connection = app.infra.connectionFactory();
-        var produtosDAO = new ProdutosDAO(connection);
+        var produtosDAO = new app.infra.ProdutosDAO(connection);
 
-        // produtosDAO.lista(function(erros, results) {
-        //     if(erros){
-        //         return next(erros)
-        //     }
-        //     res.format({
-        //         html: function() {
-        //             res.render('produtos/lista', {lista:results});
-        //         },
-        //         json: function() {
-        //             res.json(results);
-        //         }
-        //     });
-        // });
+        produtosDAO.lista(function(erros, results) {
+            if(erros){
+                return next(erros)
+            }
+            res.format({
+                html: function() {
+                    res.render('produtos/lista', {lista:results});
+                },
+                json: function() {
+                    res.json(results);
+                }
+            });
+        });
 
         const resultado = produtosDAO.lista();
-        console.log(resultado)
         connection.end();
     }
 
@@ -32,10 +30,10 @@ module.exports = function(app) {
 
         produtosDAO.lista(function(err, results) {
             res.json(results);
-        });
 
         connection.end();
-    });
+      });
+    })
 
     app.get('/produtos/form', function(req, res) {
         res.render('produtos/form',{errosValidacao:{},produto:{}});
@@ -48,7 +46,7 @@ module.exports = function(app) {
         req.assert('preco','Formato invalido').isFloat()
         var erros = req.validationErrors()
 
-        if(erros){            
+        if(erros){
             res.format({
                 html: function(){
                     res.status(400).render('produtos/form',{errosValidacao:erros,produto:produto});
@@ -58,12 +56,12 @@ module.exports = function(app) {
                 }
             });
             return
-        } 
+        }
 
 
         var connection = app.infra.connectionFactory()
         var produtosDAO = new app.infra.ProdutosDAO(connection)
-        
+
         produtosDAO.salva(produto, function(err, results) {
             res.redirect('/produtos');
         });
